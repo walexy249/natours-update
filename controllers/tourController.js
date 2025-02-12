@@ -4,6 +4,30 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+exports.checkID = (req, res, next, val) => {
+  console.log('Tour id ', val);
+  const id = val;
+  const index = tours.findIndex((el) => el.id === id);
+  if (index === -1) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid id',
+    });
+  }
+  next();
+};
+
+exports.checkBody = (req, res, next) => {
+  console.log('Tour body', req.body.name);
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Tour must contain a name or price',
+    });
+  }
+  next();
+};
+
 exports.getAllTour = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -32,12 +56,6 @@ exports.getTour = (req, res) => {
 exports.updateTour = (req, res) => {
   const id = +req.params.id;
   const index = tours.findIndex((el) => el.id === id);
-  if (index === -1) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Invalid id',
-    });
-  }
   tours[index].name = req.body.name;
 
   fs.writeFile(
@@ -57,12 +75,6 @@ exports.updateTour = (req, res) => {
 exports.deleteTour = (req, res) => {
   const id = +req.params.id;
   const index = tours.findIndex((el) => el.id === id);
-  if (index === -1) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Invalid id',
-    });
-  }
 
   tours.splice(index, 1);
   fs.writeFile(
