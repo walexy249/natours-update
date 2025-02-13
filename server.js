@@ -10,18 +10,9 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD,
 );
 
-// mongoose.connect(DB).then((connection) => {
-//   console.log('Database connection successful');
-// });
-mongoose
-  .connect(DB, {
-    useUrlParse: true,
-    useCreateIndex: true,
-    useFindAndModify: true,
-  })
-  .then((connection) => {
-    console.log('Database connection successful');
-  });
+mongoose.connect(DB).then((connection) => {
+  console.log('Database connection successful');
+});
 
 app.listen(port, () => {
   console.log('app is running on port ', port);
