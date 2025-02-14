@@ -14,47 +14,58 @@ const Tour = require('../models/tourModel');
 //   next();
 // };
 
-exports.getAllTour = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    tours,
-  });
+exports.getAllTour = async (req, res) => {
+  try {
+    const tours = await Tour.find();
+    res.status(200).json({
+      status: 'success',
+      results: tours.length,
+      tours,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.getTour = (req, res) => {
-  // const id = +req.params.id;
-  // const tour = tours.find((el) => el.id === id);
-  // if (!tour) {
-  //   return res.status(400).json({
-  //     status: 'fail',
-  //     message: 'Invalid id',
-  //   });
-  // }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
+exports.getTour = async (req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.updateTour = (req, res) => {
-  // const id = +req.params.id;
-  // const index = tours.findIndex((el) => el.id === id);
-  // tours[index].name = req.body.name;
-  // fs.writeFile(
-  //   `${__dirname}/dev-data/data/tours-simple.json`,
-  //   JSON.stringify(tours),
-  //   (err) => {
-  //     res.status(201).json({
-  //       status: 'success',
-  //       data: {
-  //         tour: tours[index],
-  //       },
-  //     });
-  //   }
-  // );
+exports.updateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
 exports.deleteTour = (req, res) => {
