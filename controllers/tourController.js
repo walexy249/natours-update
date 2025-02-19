@@ -27,8 +27,25 @@ exports.getAllTour = async (req, res) => {
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     console.log('Query string', queryStr);
     const query = Tour.find(JSON.parse(queryStr));
+
+    // Sorting
+    if (req.query.sort) {
+      const sort = req.query.sort.split(',').join(' ');
+      query = query.sort(sort);
+    } else {
+      query.sort('-createdAt');
+    }
+
+    // field limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query.select(fields);
+    } else {
+      query.select('-__v');
+    }
     const tours = await query;
 
+    // send response
     res.status(200).json({
       status: 'success',
       results: tours.length,
