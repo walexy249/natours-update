@@ -43,6 +43,17 @@ exports.getAllTour = async (req, res) => {
     } else {
       query.select('-__v');
     }
+
+    // pagination
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || 100;
+    const skip = (page - 1) * limit;
+
+    query.skip(skip).limit(limit);
+    if (req.query.page) {
+      const numOfTours = await Tour.countDocuments();
+      if (skip >= numOfTours) throw new Error('Invalid page');
+    }
     const tours = await query;
 
     // send response
