@@ -9,13 +9,20 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD,
 );
 
-mongoose
-  .connect(DB)
-  .then((connection) => {
-    console.log('Database connection successful');
-  })
-  .catch((err) => console.error('MongoDB connection error:', err));
+mongoose.connect(DB).then((connection) => {
+  console.log('Database connection successful');
+});
+// .catch((err) => console.error('MongoDB connection error:', err));
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log('app is running on port ', process.env.PORT);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.log('Error');
+  console.log(err.name, err.message);
+  server.close(() => {
+    console.log('Unhandled Rejections. Shutting down......');
+    process.exit(1);
+  });
 });
