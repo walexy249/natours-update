@@ -26,8 +26,13 @@ const sendErrorProd = (err, res) => {
   }
 };
 
-const handleErrorDB = (err) => {
+const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}: ${err.value}`;
+  return new AppError(message, 400);
+};
+
+const handleDuplicateErrorDB = (err) => {
+  const message = `Duplicate field error ${err.keyValue.name}. Please use another value`;
   return new AppError(message, 400);
 };
 
@@ -47,7 +52,10 @@ module.exports = (err, req, res, next) => {
     // console.log('ERROR Name', error.name);
 
     if (error.name === 'CastError') {
-      error = handleErrorDB(error);
+      error = handleCastErrorDB(error);
+    }
+    if (error.code === 11000) {
+      error = handleDuplicateErrorDB(error);
     }
     sendErrorProd(error, res);
   }
