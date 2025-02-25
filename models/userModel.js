@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
   photo: {
     type: String,
   },
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'guide', 'lead-guide'],
+    message: 'user must have a role',
+  },
   password: {
     type: String,
     required: [true, 'Please provide a password'],
