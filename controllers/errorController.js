@@ -18,7 +18,7 @@ const sendErrorProd = (err, res) => {
     });
   } else {
     // programming or other unknown error: don't leak to client
-    console.log('Error 🎇', err);
+    // console.log('Error 🎇', err);
     res.status(500).json({
       status: 'Error',
       message: 'Something Went wrong!',
@@ -40,6 +40,14 @@ const handleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
   const message = `Invalid data input. ${errors.join('.')}`;
   return new AppError(message, 400);
+};
+
+const handleJsonWebTokenError = () => {
+  return new AppError(`Invalid token. Please login again`, 401);
+};
+
+const handleTokenExpiredError = () => {
+  return new AppError(`Token expired already. Please login again`, 401);
 };
 
 module.exports = (err, req, res, next) => {
@@ -66,6 +74,8 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'ValidationError') {
       error = handleValidationErrorDB(error);
     }
+    if (error.name === 'JsonWebTokenError') error = handleJsonWebTokenError();
+    if (error.name === 'TokenExpiredError') error = handleTokenExpiredError();
     sendErrorProd(error, res);
   }
 };
