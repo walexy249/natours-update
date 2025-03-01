@@ -4,14 +4,10 @@ const mongoose = require('mongoose');
 process.on('uncaughtException', (err) => {
   console.log('Error');
   console.log(err.name, err.message);
-  server.close(() => {
-    console.log('Unhandled Rejections. Shutting down......');
-    process.exit(1);
-  });
+  process.exit(1);
 });
 dotenv.config({ path: './config.env' });
 const app = require('./app');
-// console.log(process.env);
 
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',

@@ -13,14 +13,16 @@ const sendEmail = async (options) => {
 
   //   2) Define Mail options
 
+  console.log('options', options);
   const mailOptions = {
     from: 'Natours <natours.io>',
     to: options.email,
     subject: options.subject,
-    message: options.message,
+    text: options.message,
     // html:
   };
 
+  //   Send the email
   await transporter.sendMail(mailOptions);
 };
 
