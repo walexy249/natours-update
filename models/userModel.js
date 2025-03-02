@@ -53,13 +53,15 @@ userSchema.pre('save', async function (next) {
   //   Hash the password password
   this.password = await bcrypt.hash(this.password, 12);
 
+  //   console.log('Password encrypted', this.password);
+
   //  delete the passwordConfirm field
   this.passwordConfirm = undefined;
   next();
 });
 
 userSchema.pre('save', async function (next) {
-  // omly run this function if password is modified
+  // omly run this function if password is modified and
   if (!this.isModified('password') || this.isNew) return next();
 
   // Update the passwordChangedAt date
