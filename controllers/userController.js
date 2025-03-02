@@ -48,6 +48,17 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  // Check if the body contains password
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    message: 'User deleted successfully',
+    data: null,
+  });
+});
+
 exports.getUser = (req, res) => {
   res.status(500).json({
     status: 'fail',
