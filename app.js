@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -13,6 +14,8 @@ const app = express();
 // app.get('/', (req, res) => {
 //   res.status(200).json({ message: 'hello world', app: 'natours' });
 // });
+
+// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
@@ -22,8 +25,13 @@ const limiter = rateLimit({
   limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
   message: 'Too many request from this IP. Try again later',
 });
-
+// Rate limiting
 app.use('/api', limiter);
+
+// Setting security headers
+app.use(helmet());
+
+// Body parser, reading data from body into req.body
 app.use(express.json());
 
 app.use(express.static(`${__dirname}/public`));
