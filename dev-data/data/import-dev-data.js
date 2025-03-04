@@ -10,9 +10,7 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD,
 );
 
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'),
-);
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 
 mongoose.connect(DB).then((connection) => {
   console.log('Database connection successful');
@@ -37,15 +35,10 @@ const deleteData = async () => {
     console.log(err);
   }
 };
-console.log(process.argv);
+// console.log(process.argv);
 
 if (process.argv[2] === '--import') {
-  console.log('hey');
   importData();
 } else if (process.argv[2] === '--delete') {
-  console.log('hey');
-
   deleteData();
-} else {
-  console.log('nah', process.argv[2]);
 }

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+// const User = require('./userModel');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -83,6 +84,36 @@ const tourSchema = new mongoose.Schema(
       default: false,
       type: Boolean,
     },
+    startLocation: {
+      // GeoJson
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: {
@@ -104,6 +135,12 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
+// tourSchema.pre('save', async function (next) {
+//   const tourPromises = this.guides.map(async (id) => await User.findById(id));
+//   this.guides = await Promise.all(tourPromises);
+//   next();
+// });
+
 // tourSchema.pre('save', function (next) {
 //   console.log('Will save documents');
 //   next();
@@ -121,6 +158,13 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt -passwordResetExpires -passwordResetToken',
+  });
+  next();
+});
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`Time duration is ${Date.now() - this.startTime} milliseconds`);
   // console.log(docs);
@@ -137,19 +181,3 @@ tourSchema.pre('aggregate', function (next) {
 });
 const Tour = mongoose.model('Tour', tourSchema);
 module.exports = Tour;
-
-// {
-//   "id": 7,
-//   "name": "The Star Gazer",
-//   "duration": 9,
-//   "maxGroupSize": 8,
-//   "difficulty": "medium",
-//   "ratingsAverage": 4.7,
-//   "ratingsQuantity": 28,
-//   "price": 2997,
-//   "summary": "The most remote and stunningly beautiful places for seeing the night sky",
-//   "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-//   "imageCover": "tour-8-cover.jpg",
-//   "images": ["tour-8-1.jpg", "tour-8-2.jpg", "tour-8-3.jpg"],
-//   "startDates": ["2021-03-23,10:00", "2021-10-25,10:00", "2022-01-30,10:00"]
-// },
