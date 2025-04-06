@@ -23,9 +23,8 @@ exports.setTourUserId = (req, res, next) => {
 };
 
 exports.createReview = factory.createOne(Review);
-
+exports.getReview = factory.getOne(Review);
 exports.updateReview = factory.updateOne(Review);
-
 exports.deleteReview = factory.deleteOne(Review);
 // exports.createReview = catchAsync(async (req, res, next) => {
 //   const review = await Review.create({
