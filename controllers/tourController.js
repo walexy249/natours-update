@@ -35,21 +35,21 @@ exports.aliastTopCheapTours = (req, res, next) => {
 //   });
 // });
 
-exports.getAllTour = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const tours = await features.query;
+// exports.getAllTour = catchAsync(async (req, res, next) => {
+//   const features = new APIFeatures(Tour.find(), req.query)
+//     .filter()
+//     .sort()
+//     .limitFields()
+//     .paginate();
+//   const tours = await features.query;
 
-  // send response
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    tours,
-  });
-});
+//   // send response
+//   res.status(200).json({
+//     status: 'success',
+//     results: tours.length,
+//     tours,
+//   });
+// });
 
 // exports.getTour = catchAsync(async (req, res, next) => {
 //   const tour = await Tour.findById(req.params.id).populate('reviews');
@@ -63,6 +63,8 @@ exports.getAllTour = catchAsync(async (req, res, next) => {
 //     },
 //   });
 // });
+
+exports.getAllTour = factory.getAll(Tour);
 
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 
