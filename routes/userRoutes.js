@@ -31,7 +31,7 @@ router
   .patch(
     authController.protect,
     authController.restrictTo('admin'),
-    userController.updateUSer,
+    userController.updateUser,
   )
   .delete(
     authController.protect,
