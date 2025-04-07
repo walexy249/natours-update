@@ -40,6 +40,9 @@ const reviewSchema = mongoose.Schema(
   },
 );
 
+// this makes  a review unique so a user can't post a review more than once
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
