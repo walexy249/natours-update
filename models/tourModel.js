@@ -129,6 +129,7 @@ const tourSchema = new mongoose.Schema(
 // Indexes
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 // Virtual properties
 
@@ -179,11 +180,11 @@ tourSchema.pre(/^find/, function (next) {
   });
   next();
 });
-tourSchema.post(/^find/, function (docs, next) {
-  console.log(`Time duration is ${Date.now() - this.startTime} milliseconds`);
-  // console.log(docs);
-  next();
-});
+// tourSchema.post(/^find/, function (docs, next) {
+//   console.log(`Time duration is ${Date.now() - this.startTime} milliseconds`);
+//   // console.log(docs);
+//   next();
+// });
 
 // Aggregation Middleware
 tourSchema.pre('aggregate', function (next) {
