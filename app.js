@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const path = require('path');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -13,6 +14,12 @@ const globalErrorHandler = require('./controllers/errorController');
 const reviewRouter = require('./routes/reviewRouter');
 
 const app = express();
+
+// app.use('view engine', 'pug');
+app.use('views', path.join(__dirname, 'public'));
+
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // app.get('/', (req, res) => {
 //   res.status(200).json({ message: 'hello world', app: 'natours' });
@@ -56,8 +63,6 @@ app.use(
     ],
   }),
 );
-
-app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   console.log('Middleware');
