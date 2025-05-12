@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cors = require('cors');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -24,6 +25,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.get('/', (req, res) => {
 //   res.status(200).json({ message: 'hello world', app: 'natours' });
 // });
+
+app.use(cors());
+app.options('*', cors());
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
